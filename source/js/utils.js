@@ -605,15 +605,15 @@ const anzhiyu = {
       let message = "";
 
       if (hour >= 0 && hour <= 5) {
-        message = "睡个好觉，保证精力充沛";
+        message = "为学日益，为道日损。损之又损，以至于无为";
       } else if (hour > 5 && hour <= 10) {
-        message = "一日之计在于晨";
+        message = "人法地，地法天，天法道，道法自然";
       } else if (hour > 10 && hour <= 14) {
-        message = "吃饱了才有力气干活";
+        message = "合抱之木，生于毫末；九层之台，起于累土";
       } else if (hour > 14 && hour <= 18) {
-        message = "集中精力，攻克难关";
+        message = "天下难事，必作于易；天下大事，必作于细";
       } else if (hour > 18 && hour <= 24) {
-        message = "不要太劳累了，早睡更健康";
+        message = "知人者智，自知者明。胜人者有力，自胜者强";
       }
 
       return message;
