@@ -48,6 +48,9 @@ link(rel="canonical" href=urlNoIndex())
 //- 網站驗證
 !=partial('includes/head/site_verification', {}, {cache: true})
 
+//- Schema.org JSON-LD 结构化数据（SEO）
+include ./head/json_ld.pug
+
 //- PWA
 if (theme.pwa && theme.pwa.enable)
   !=partial('includes/head/pwa', {}, {cache: true})

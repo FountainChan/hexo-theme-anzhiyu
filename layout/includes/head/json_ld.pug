@@ -1,0 +1,53 @@
+//- Schema.org JSON-LD 结构化数据
+//- 文档: https://developers.google.com/search/docs/appearance/structured-data/intro-structured-data
+//- 注意：JSON-LD 在 <script> 内不需要 HTML 转义，使用 !{} 避免转义
+
+//- 站级 WebSite schema（非文章页输出）
+if !is_post()
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "#{config.url}",
+      "name": !{JSON.stringify(config.title || '')},
+      "description": !{JSON.stringify(config.description || '')},
+      "inLanguage": "#{config.language || 'zh-CN'}",
+      "publisher": {
+        "@type": "Person",
+        "name": !{JSON.stringify(config.author || '')}
+      }
+    }
+
+//- 文章级 BlogPosting schema（仅文章页输出）
+if is_post()
+  - var postImg = page.cover || (theme.default_cover && theme.default_cover[0]) || ''
+  - if (!postImg && page.thumbnail) postImg = page.thumbnail
+  - var postDesc = page.description || (page.excerpt ? page.excerpt.replace(/<[^>]+>/g, '').trim().slice(0, 200) : '') || config.description || ''
+  - var articleSection = (page.categories && page.categories.length) ? page.categories.data[0].name : ''
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "#{page.permalink}"
+      },
+      "url": "#{page.permalink}",
+      "headline": !{JSON.stringify(page.title || '')},
+      "description": !{JSON.stringify(postDesc)},
+      "image": !{JSON.stringify(postImg)},
+      "datePublished": "#{date_xml(page.date)}",
+      "dateModified": "#{date_xml(page.updated)}",
+      "inLanguage": "#{config.language || 'zh-CN'}",
+      "author": {
+        "@type": "Person",
+        "name": !{JSON.stringify(page.author || config.author || '')},
+        "url": "#{config.url}/about/"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": !{JSON.stringify(config.author || '')},
+        "url": "#{config.url}"
+      },
+      "articleSection": !{JSON.stringify(articleSection)}
+    }
