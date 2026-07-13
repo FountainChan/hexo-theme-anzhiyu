@@ -23,7 +23,8 @@ if is_post()
   - var postImg = page.cover || (theme.default_cover && theme.default_cover[0]) || ''
   - if (!postImg && page.thumbnail) postImg = page.thumbnail
   - var postDesc = page.description || (page.excerpt ? page.excerpt.replace(/<[^>]+>/g, '').trim().slice(0, 200) : '') || config.description || ''
-  - var articleSection = (page.categories && page.categories.length) ? page.categories.data[0].name : ''
+  - var firstCat = (page.categories && page.categories.length) ? page.categories.data[0] : null
+  - var articleSection = firstCat ? (firstCat.slug || firstCat.name) : ''
   script(type="application/ld+json").
     {
       "@context": "https://schema.org",
