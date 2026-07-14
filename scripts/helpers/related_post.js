@@ -49,13 +49,12 @@ hexo.extend.helper.register("related_posts", function (currentPost, allPosts) {
     result += `<div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>${headlineLang}</span></div>`;
     result += '<div class="relatedPosts-list">';
 
-    for (let i = 0; i < Math.min(relatedPosts.length, limitNum); i++) {
-      const cover = relatedPosts[i].cover === false ? relatedPosts[i].randomcover : relatedPosts[i].cover;
+for (let i = 0; i < Math.min(relatedPosts.length, limitNum); i++) {
       const title = this.escape_html(relatedPosts[i].title);
       result += `<div><a href="${this.url_for(relatedPosts[i].path)}" title="${title}">`;
-      result += `<img class="cover" src="${this.url_for(cover)}" alt="cover">`;
+      result += `<div class="content is-center">`;
       if (dateType === "created") {
-        result += `<div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> ${this.date(
+        result += `<div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> ${this.date(
           relatedPosts[i].created,
           hexoConfig.date_format
         )}</div>`;
