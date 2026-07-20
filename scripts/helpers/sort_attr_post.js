@@ -30,6 +30,9 @@ hexo.extend.helper.register("sort_attr_post", function (type) {
   swiper_list = swiper_list.reverse();
   top_group_list = top_group_list.reverse();
 
+  // posts_list 默认不是按日期排序的，需要按 date 降序重新排序，确保 fallback 时取到最新文章
+  posts_list = posts_list.slice().sort((a, b) => b.date - a.date);
+
   // 当top_group_list长度小于目标长度时，使用最新的可用文章来补足到目标长度
   if (top_group_list.length < targetLength) {
     const newPosts = posts_list
