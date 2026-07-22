@@ -18,8 +18,37 @@ if !is_post()
       }
     }
 
-//- 文章级 BlogPosting schema（仅文章页输出）
+//- 文章级 schema（仅文章页输出）
 if is_post()
+  - var postImg = page.cover || (theme.default_cover && theme.default_cover[0]) || ''
+  - if (!postImg && page.thumbnail) postImg = page.thumbnail
+  script(type="application/ld+json").
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "首页",
+          "item": "#{config.url}/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": !{JSON.stringify(page.categories && page.categories.length ? page.categories.data[0].name : '文章')},
+          "item": "#{config.url}/#{page.categories && page.categories.length ? page.categories.data[0].path : ''}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": !{JSON.stringify(page.title || '')},
+          "item": "#{page.permalink}"
+        }
+      ]
+    }
+
+//- 文章级 BlogPosting schema（仅文章页输出）
   - var postImg = page.cover || (theme.default_cover && theme.default_cover[0]) || ''
   - if (!postImg && page.thumbnail) postImg = page.thumbnail
   - var postDesc = page.description || (page.excerpt ? page.excerpt.replace(/<[^>]+>/g, '').trim().slice(0, 200) : '') || config.description || ''

@@ -40,7 +40,7 @@ meta(name="apple-mobile-web-app-status-bar-style", content=themeColor)
 include ./head/Open_Graph.pug
 
 !=favicon_tag(theme.favicon || config.favicon)
-link(rel="canonical" href=urlNoIndex())
+link(rel="canonical" href=page.canonical_url || urlNoIndex())
 
 //- 預解析
 !=partial('includes/head/preconnect', {}, {cache: true})
