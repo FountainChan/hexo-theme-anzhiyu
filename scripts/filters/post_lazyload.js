@@ -15,7 +15,7 @@ const lazyload = htmlContent => {
     : "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
   return htmlContent.replace(
     /(<img(?!.class[\t]*=[\t]*['"].*?nolazyload.*?['"]).*? src=)/gi,
-    `$1 "${bg}" onerror="this.onerror=null;this.src=&quot;${error_img}&quot;;this.title='原图: '+this.getAttribute('data-lazy-src')" data-lazy-src=`
+    `$1 "${bg}" onerror="this.onerror=null;this.src=&quot;${error_img}&quot;;this.insertAdjacentHTML('afterend','&lt;span style=&quot;display:block;text-align:center;color:#999;font-size:12px&quot;&gt;找不到图片: '+this.getAttribute('data-lazy-src')+'&lt;/span&gt;')" data-lazy-src=`
   );
 }
 
