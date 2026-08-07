@@ -19,7 +19,7 @@ block content
           i.anzhiyufont.anzhiyu-icon-angle-double-right
         a.catalog-more(href="/categories/")!= '更多'
       //- 子分类切换 tabs（参考分类页风格：边框 + 计数，无 # 符号）
-      - var subcatConfig = { 'SEO教程': { parent: 'SEO教程', parentSlug: 'seo', children: [{ name: '入门教程', slug: 'basic' }, { name: '高级教程', slug: 'advanced' }] } }
+      - var subcatConfig = { 'SEO教程': { parent: 'SEO教程', parentSlug: 'seo', children: [{ name: '入门教程', slug: 'basic' }, { name: '进阶教程', slug: 'advanced' }] } }
       - var tabConfig = subcatConfig[page.category]
       - if (!tabConfig) {
         - var allCats = site.categories.toArray ? site.categories.toArray() : []
