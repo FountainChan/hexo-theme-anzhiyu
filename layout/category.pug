@@ -18,21 +18,35 @@ block content
         .category-bar-next#category-bar-next(onclick="anzhiyu.scrollCategoryBarToRight()")
           i.anzhiyufont.anzhiyu-icon-angle-double-right
         a.catalog-more(href="/categories/")!= '更多'
-      // 子分类切换 tabs
-      - var childCategories = []
-      - if (page.category === 'SEO教程') childCategories = [{ name: '入门教程', path: 'categories/seo/basic/' }, { name: '高级教程', path: 'categories/seo/advanced/' }]
-      if childCategories.length > 0
-        .subcategory-tabs(style="display:flex;gap:0.5rem;margin:1rem 0;padding:0.5rem;background:var(--card-bg);border-radius:8px")
-          each child in childCategories
+      // 子分类切换 tabs（已知有子分类的父分类 / 子分类也显示兄弟）
+      - var subcatConfig = { 'SEO教程': { parent: 'SEO教程', parentSlug: 'seo', children: [{ name: '入门教程', slug: 'basic' }, { name: '高级教程', slug: 'advanced' }] } }
+      - var tabConfig = subcatConfig[page.category]
+      // 如果当前是子分类，找父分类的配置
+      - if (!tabConfig) {
+        - var allCats = site.categories.toArray ? site.categories.toArray() : []
+        - var curCat = null
+        - allCats.forEach(function(c) { if (c.name === page.category) curCat = c })
+        - if (curCat && curCat.parent) {
+          - var parentCat = allCats.find(function(c) { return c._id === curCat.parent })
+          - if (parentCat) tabConfig = subcatConfig[parentCat.name]
+        - }
+      - }
+      if tabConfig
+        #catalog-list.subcategory-tabs(style="display:flex;gap:0.3rem;margin:0.5rem 0 0.8rem 0")
+          each child in tabConfig.children
             - var isActive = page.category === child.name
-            a(href="/" + child.path, style="flex:1;text-align:center;padding:0.5rem 1rem;border-radius:6px;text-decoration:none;font-weight:" + (isActive ? "700" : "400") + ";background:" + (isActive ? "var(--theme-color)" : "transparent") + ";color:" + (isActive ? "#fff" : "var(--font-color)") + ";transition:all 0.2s")
-              = child.name
-        // 父分类页默认只显示入门教程的文章
-        - var basicPosts = []
-        - var allPosts = page.posts.toArray ? page.posts.toArray() : []
-        - allPosts.forEach(function(p) { var inBasic = false; if (p.categories && p.categories.toArray) { p.categories.toArray().forEach(function(c) { if (c.name === '入门教程') inBasic = true }) }; if (inBasic) basicPosts.push(p) })
-        - basicPosts.sort(function(a, b) { return (a.series_index || 999) - (b.series_index || 999) })
-        - page.posts = { each: function(cb) { basicPosts.forEach(cb) } }
-      .article-sort-title= _p('page.category') + ' - ' + page.category
+            - var tabPath = '/categories/' + tabConfig.parentSlug + '/' + child.slug + '/'
+            .catalog-list-item(class=isActive ? 'select' : '')
+              a(href=tabPath)= child.name
+      // 标题（面包屑格式）
+      - var titleHtml = _p('page.category')
+      - if (tabConfig && tabConfig.parent !== page.category) {
+        // 当前是子分类，父分类名加链接
+        - titleHtml += ' / <a href="/categories/' + tabConfig.parentSlug + '/" style="color:var(--theme-color);text-decoration:none">' + tabConfig.parent + '</a>'
+        - titleHtml += ' / ' + page.category
+      - } else {
+        - titleHtml += ' / ' + page.category
+      - }
+      .article-sort-title !{titleHtml}
       +articleSort(page.posts, page.current)
       include includes/pagination.pug
