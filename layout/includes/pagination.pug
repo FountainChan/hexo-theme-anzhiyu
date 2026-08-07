@@ -9,16 +9,16 @@
 if is_post()
   - let prev = theme.post_pagination === 1 || theme.post_pagination === 3 || theme.post_pagination === 4 ? page.prev : page.next
   - let next = theme.post_pagination === 1 || theme.post_pagination === 3 || theme.post_pagination === 4 ? page.next : page.prev
+  // 辅助函数：图片加载失败时隐藏图片，让黑底透出
+  - function coverOnError() { return 'this.onerror=null;this.style.display=\'none\'' }
   // 优先使用 frontmatter 自定义 series_prev/series_next（系列教程专用）
   - if (page.series_prev)
-    - prev = { path: page.series_prev, title: page.series_prev_title || '上一章' }
+    - prev = { path: page.series_prev, title: page.series_prev_title || '上一章', cover: page.series_prev_cover || null }
   - else if (page.series_next)
-    // 有 series_next 但无 series_prev → 首篇，无上一篇
     - prev = null
   - if (page.series_next)
-    - next = { path: page.series_next, title: page.series_next_title || '下一章' }
+    - next = { path: page.series_next, title: page.series_next_title || '下一章', cover: page.series_next_cover || null }
   - else if (page.series_prev)
-    // 有 series_prev 但无 series_next → 末篇，无下一篇
     - next = null
   nav#pagination.pagination-post
     if(prev)
@@ -27,7 +27,7 @@ if is_post()
         - var pagination_cover = prev.cover === false ? prev.randomcover : prev.cover
         a(href=url_for(prev.path))
           if pagination_cover
-            img.prev-cover(src=url_for(pagination_cover) onerror=`onerror=null;src='${url_for(theme.error_img.post_page)}'` alt='cover of previous post')
+            img.prev-cover(src=url_for(pagination_cover) onerror=coverOnError() alt='cover of previous post')
           .pagination-info
             .label=_p('pagination.prev')
             .prev_info=prev.title
@@ -38,7 +38,7 @@ if is_post()
       .next-post(class=hasPagePrev)
         a(href=url_for(next.path))
           if pagination_cover
-            img.next-cover(src=url_for(pagination_cover) onerror=`onerror=null;src='${url_for(theme.error_img.post_page)}'` alt='cover of next post')
+            img.next-cover(src=url_for(pagination_cover) onerror=coverOnError() alt='cover of next post')
           .pagination-info
             .label=_p('pagination.next')
             .next_info=next.title
