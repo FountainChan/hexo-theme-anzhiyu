@@ -9,6 +9,11 @@
 if is_post()
   - let prev = theme.post_pagination === 1 || theme.post_pagination === 3 || theme.post_pagination === 4 ? page.prev : page.next
   - let next = theme.post_pagination === 1 || theme.post_pagination === 3 || theme.post_pagination === 4 ? page.next : page.prev
+  // 优先使用 frontmatter 自定义 series_prev/series_next（系列教程专用）
+  - if (page.series_prev)
+    - prev = { path: page.series_prev, title: page.series_prev_title || '上一章', cover: false }
+  - if (page.series_next)
+    - next = { path: page.series_next, title: page.series_next_title || '下一章', cover: false }
   nav#pagination.pagination-post
     if(prev)
       - var hasPageNext = next ? 'pull-left' : 'pull-full'
