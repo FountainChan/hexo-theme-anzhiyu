@@ -12,8 +12,14 @@ if is_post()
   // 优先使用 frontmatter 自定义 series_prev/series_next（系列教程专用）
   - if (page.series_prev)
     - prev = { path: page.series_prev, title: page.series_prev_title || '上一章' }
+  - else if (page.series_next)
+    // 有 series_next 但无 series_prev → 首篇，无上一篇
+    - prev = null
   - if (page.series_next)
     - next = { path: page.series_next, title: page.series_next_title || '下一章' }
+  - else if (page.series_prev)
+    // 有 series_prev 但无 series_next → 末篇，无下一篇
+    - next = null
   nav#pagination.pagination-post
     if(prev)
       - var hasPageNext = next ? 'pull-left' : 'pull-full'
