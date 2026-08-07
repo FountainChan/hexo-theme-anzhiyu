@@ -18,6 +18,21 @@ block content
         .category-bar-next#category-bar-next(onclick="anzhiyu.scrollCategoryBarToRight()")
           i.anzhiyufont.anzhiyu-icon-angle-double-right
         a.catalog-more(href="/categories/")!= '更多'
+      // 子分类切换 tabs
+      - var childCategories = []
+      - if (page.category === 'SEO教程') childCategories = [{ name: '入门教程', path: 'categories/seo/basic/' }, { name: '高级教程', path: 'categories/seo/advanced/' }]
+      if childCategories.length > 0
+        .subcategory-tabs(style="display:flex;gap:0.5rem;margin:1rem 0;padding:0.5rem;background:var(--card-bg);border-radius:8px")
+          each child in childCategories
+            - var isActive = page.category === child.name
+            a(href="/" + child.path, style="flex:1;text-align:center;padding:0.5rem 1rem;border-radius:6px;text-decoration:none;font-weight:" + (isActive ? "700" : "400") + ";background:" + (isActive ? "var(--theme-color)" : "transparent") + ";color:" + (isActive ? "#fff" : "var(--font-color)") + ";transition:all 0.2s")
+              = child.name
+        // 父分类页默认只显示入门教程的文章
+        - var basicPosts = []
+        - var allPosts = page.posts.toArray ? page.posts.toArray() : []
+        - allPosts.forEach(function(p) { var inBasic = false; if (p.categories && p.categories.toArray) { p.categories.toArray().forEach(function(c) { if (c.name === '入门教程') inBasic = true }) }; if (inBasic) basicPosts.push(p) })
+        - basicPosts.sort(function(a, b) { return (a.series_index || 999) - (b.series_index || 999) })
+        - page.posts = { each: function(cb) { basicPosts.forEach(cb) } }
       .article-sort-title= _p('page.category') + ' - ' + page.category
       +articleSort(page.posts, page.current)
       include includes/pagination.pug
