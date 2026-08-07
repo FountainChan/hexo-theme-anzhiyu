@@ -18,10 +18,9 @@ block content
         .category-bar-next#category-bar-next(onclick="anzhiyu.scrollCategoryBarToRight()")
           i.anzhiyufont.anzhiyu-icon-angle-double-right
         a.catalog-more(href="/categories/")!= '更多'
-      // 子分类切换 tabs（已知有子分类的父分类 / 子分类也显示兄弟）
+      //- 子分类切换 tabs（参考分类页风格：边框 + 计数，无 # 符号）
       - var subcatConfig = { 'SEO教程': { parent: 'SEO教程', parentSlug: 'seo', children: [{ name: '入门教程', slug: 'basic' }, { name: '高级教程', slug: 'advanced' }] } }
       - var tabConfig = subcatConfig[page.category]
-      // 如果当前是子分类，找父分类的配置
       - if (!tabConfig) {
         - var allCats = site.categories.toArray ? site.categories.toArray() : []
         - var curCat = null
@@ -32,17 +31,31 @@ block content
         - }
       - }
       if tabConfig
-        #catalog-list.subcategory-tabs(style="display:flex;gap:0.3rem;margin:0.5rem 0 0.8rem 0")
+        #subcategory-tabs(style="display:flex;flex-flow:row wrap;margin:0.5rem 0 0.8rem 0")
           each child in tabConfig.children
             - var isActive = page.category === child.name
             - var tabPath = '/categories/' + tabConfig.parentSlug + '/' + child.slug + '/'
-            .catalog-list-item(class=isActive ? 'select' : '')
-              a(href=tabPath)= child.name
-      // 标题（面包屑格式）
-      - var titleHtml = _p('page.category')
+            - var bgColor = isActive ? 'var(--anzhiyu-theme)' : 'transparent'
+            - var txtColor = isActive ? '#fff' : 'var(--anzhiyu-fontcolor)'
+            - var bdrStyle = isActive ? 'var(--style-border-none)' : 'var(--style-border-always)'
+            - var countColor = isActive ? 'var(--anzhiyu-lighttext)' : 'var(--anzhiyu-fontcolor)'
+            //- 从 site.categories 获取文章数
+            - var count = 0
+            - if (site.categories) {
+              - var catArr = site.categories.toArray ? site.categories.toArray() : []
+              - catArr.forEach(function(cat) { if (cat.name === child.name) count = cat.length })
+            - }
+            a(href=tabPath
+              style="display:flex;align-items:center;padding:0.1rem 0.6rem;margin:0.25rem;border-radius:8px;border:" + bdrStyle + ";text-decoration:none;font-size:1.1rem;transition:all 0.3s;background:" + bgColor + ";color:" + txtColor
+              onmouseover="this.style.background='var(--anzhiyu-theme)';this.style.color='#fff';this.style.border='var(--style-border-none)'"
+              onmouseout="this.style.background='" + bgColor + "';this.style.color='" + txtColor + "';this.style.border='" + bdrStyle + "'")
+              = child.name
+              span.tagsPageCount(style="margin-left:6px;padding:3px 6px;background:var(--anzhiyu-secondbg);border:var(--style-border-always);border-radius:4px;font-size:0.7rem;line-height:1;color:" + countColor)
+                = count
+      // 标题（面包屑格式：分类 链接到 /categories/，hover 同 catalog-bar）
+      - var titleHtml = '<a href="/categories/" style="color:var(--theme-color);text-decoration:none;padding:0.1rem 0.5rem;border-radius:8px;transition:all 0.3s" onmouseover="this.style.background=\'var(--anzhiyu-main)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'transparent\';this.style.color=\'var(--theme-color)\'">' + _p('page.category') + '</a>'
       - if (tabConfig && tabConfig.parent !== page.category) {
-        // 当前是子分类，父分类名加链接
-        - titleHtml += ' / <a href="/categories/' + tabConfig.parentSlug + '/" style="color:var(--theme-color);text-decoration:none">' + tabConfig.parent + '</a>'
+        - titleHtml += ' / <a href="/categories/' + tabConfig.parentSlug + '/" style="color:var(--theme-color);text-decoration:none;padding:0.1rem 0.5rem;border-radius:8px;transition:all 0.3s" onmouseover="this.style.background=\'var(--anzhiyu-main)\';this.style.color=\'#fff\'" onmouseout="this.style.background=\'transparent\';this.style.color=\'var(--theme-color)\'">' + tabConfig.parent + '</a>'
         - titleHtml += ' / ' + page.category
       - } else {
         - titleHtml += ' / ' + page.category
